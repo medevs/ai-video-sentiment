@@ -1,0 +1,37 @@
+# Dataset files
+sentiment-model/dataset/*/
+sentiment-model/dataset/train/
+sentiment-model/dataset/dev/
+sentiment-model/dataset/test/
+*.mp4
+*.wav
+
+# Python virtual environment
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Model checkpoints and saved models
+*.pt
+*.pth
+*.h5
+*.ckpt
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+Thumbs.db
