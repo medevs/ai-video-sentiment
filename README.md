@@ -44,7 +44,7 @@ sentiment-model/dataset/
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/ai-video-sentiment.git
+git clone https://github.com/medevs/ai-video-sentiment.git
 cd ai-video-sentiment
 ```
 
