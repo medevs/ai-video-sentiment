@@ -35,3 +35,8 @@ build/
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# TensorBoard logs
+runs/
+
+transcript.txt
