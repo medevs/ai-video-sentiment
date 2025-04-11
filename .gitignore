@@ -40,3 +40,11 @@ Thumbs.db
 runs/
 
 transcript.txt
+
+deployment/model/*
+deployment/model/metrics.json
+!deployment/model/.gitkeep
+
+deployment/model_normalized/*
+deployment/model_normalized/metrics.json
+!deployment/model_normalized/.gitkeep
