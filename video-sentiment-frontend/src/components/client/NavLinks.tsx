@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import LogoutButton from "./LogoutButton";
+import { LogoutButton } from "./LogoutButton";
 
 type NavLinksProps = {
   isAuthenticated?: boolean;
@@ -25,7 +25,7 @@ export default function NavLinks({ isAuthenticated = false }: NavLinksProps) {
           >
             Dashboard
           </Link>
-          <LogoutButton />
+          < LogoutButton />
         </>
       ) : (
         <>

@@ -1,22 +1,26 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { FiLogOut } from "react-icons/fi";
 
-type LogoutButtonProps = {
-  className?: string;
-};
+export function LogoutButton() {
+  const router = useRouter();
 
-export default function LogoutButton({ className = "" }: LogoutButtonProps) {
-  const handleLogout = async () => {
-    await signOut({ callbackUrl: "/" });
+  const handleSignOut = async () => {
+    await signOut({
+      redirect: false,
+    });
+    router.push("/login");
   };
 
   return (
     <button
-      onClick={handleLogout}
-      className={`rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-200 ${className}`}
+      onClick={handleSignOut}
+      className="flex h-8 items-center justify-center gap-2 rounded-md border border-gray-200 bg-white px-3 text-sm text-gray-600 transition-colors hover:bg-gray-50"
     >
-      Log out
+      <FiLogOut className="h-4 w-4" />
+      Logout
     </button>
   );
 }
