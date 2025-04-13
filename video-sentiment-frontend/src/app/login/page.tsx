@@ -6,36 +6,25 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { registerUser } from "~/actions/auth";
-import { signupSchema, type SignupSchema } from "~/schemas/auth";
+import { loginSchema, type LoginSchema } from "~/schemas/auth";
 import Navbar from "~/components/navbar";
 
-export default function SignupPage() {
+export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<SignupSchema>({
-    resolver: zodResolver(signupSchema),
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
-  async function onSubmit(data: SignupSchema) {
+  async function onSubmit(data: LoginSchema) {
     try {
       setLoading(true);
 
-      const result = await registerUser(data);
-
-      if (result.error) {
-        setError(result.error);
-        return;
-      }
-
-      // Sign in after registration
       const signInResult = await signIn("credentials", {
         redirect: false,
         email: data.email,
@@ -45,7 +34,11 @@ export default function SignupPage() {
       if (!signInResult?.error) {
         router.push("/");
       } else {
-        setError("Failed to sign in");
+        setError(
+          signInResult.error === "CredentialsSignin"
+            ? "Invalid email or password"
+            : "Something went wrong",
+        );
       }
     } catch (error) {
       console.error(error);
@@ -62,9 +55,9 @@ export default function SignupPage() {
       <main className="flex h-[calc(100vh-4rem)] items-center justify-center">
         <div className="w-full max-w-md space-y-8 px-4">
           <div className="text-center">
-            <h2 className="text-2xl font-bold">Create an account</h2>
+            <h2 className="text-2xl font-bold">Welcome back</h2>
             <p className="mt-2 text-sm text-gray-600">
-              Sign up to get started with <span className="text-md font-semibold text-gray-900">VibeScan</span>
+              Please sign in to your account
             </p>
           </div>
 
@@ -79,23 +72,6 @@ export default function SignupPage() {
             )}
 
             <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Full name
-                </label>
-                <input
-                  {...form.register("name")}
-                  type="text"
-                  placeholder="John Doe"
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-gray-500 focus:outline-none"
-                />
-                {form.formState.errors.name && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {form.formState.errors.name.message}
-                  </p>
-                )}
-              </div>
-
               <div>
                 <label className="text-sm font-medium text-gray-700">
                   Email address
@@ -129,23 +105,6 @@ export default function SignupPage() {
                   </p>
                 )}
               </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Confirm password
-                </label>
-                <input
-                  {...form.register("confirmPassword")}
-                  type="password"
-                  placeholder="********"
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-gray-500 focus:outline-none"
-                />
-                {form.formState.errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {form.formState.errors.confirmPassword.message}
-                  </p>
-                )}
-              </div>
             </div>
 
             <button
@@ -153,16 +112,16 @@ export default function SignupPage() {
               disabled={loading}
               className="flex w-full justify-center rounded-md bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {loading ? "Creating account..." : "Create account"}
+              {loading ? "Logging in..." : "Log in"}
             </button>
 
             <p className="text-center text-sm text-gray-600">
-              Already have an account?{" "}
+              Don&rsquo;t have an account?{" "}
               <Link
                 className="font-medium text-gray-800 hover:text-gray-700"
-                href="/login"
+                href="/signup"
               >
-                Sign in
+                Sign up
               </Link>
             </p>
           </form>
