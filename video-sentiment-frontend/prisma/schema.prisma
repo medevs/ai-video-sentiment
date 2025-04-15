@@ -64,6 +64,8 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    apiQuota    ApiQuota?
+    videoFiles    VideoFile[]
 }
 
 model VerificationToken {
@@ -72,4 +74,23 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model ApiQuota {
+    id  String @id @default(cuid())
+    userId String @unique
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    requestsUsed Int @default(0)
+    maxRequests Int @default(10000) // 10k requests per month
+    lastResetDate DateTime @default(now())
+    secretKey String @unique
+}
+
+model VideoFile {
+    id  String @id @default(cuid())
+    userId String
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    key String @unique
+    analyzed Boolean @default(false)
+    createdAt DateTime @default(now())
 }

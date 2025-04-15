@@ -1,0 +1,50 @@
+import { db } from "~/server/db";
+
+/**
+ * Checks and updates the API quota for a user.
+ * @param userId The ID of the user.
+ * @param deductFromQuota Whether to deduct from the quota (default: true).
+ * @returns A promise that resolves to a boolean indicating whether the quota is available.
+ */
+export async function checkAndUpdateQuota(
+  userId: string,
+  // deductFromQuota: boolean = true,
+  deductFromQuota: true,
+): Promise<boolean> {
+  const quota = await db.apiQuota.findUniqueOrThrow({
+    where: { userId },
+  });
+
+  const now = new Date();
+  const lastReset = new Date(quota.lastResetDate);
+  const daysSinceLastReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60 * 24);
+
+  if (daysSinceLastReset >= 30) {
+    if (deductFromQuota) {
+      await db.apiQuota.update({
+        where: { userId },
+        data: {
+          lastResetDate: now,
+          requestsUsed: 1,
+        },
+      });
+    }
+    return true;
+  }
+
+  // Check if quota is exceeded
+  if (quota.requestsUsed >= quota.maxRequests) {
+    return false;
+  }
+
+  if (deductFromQuota) {
+    await db.apiQuota.update({
+      where: { userId },
+      data: {
+        requestsUsed: quota.requestsUsed + 1,
+      },
+    });
+  }
+
+  return true;
+}
